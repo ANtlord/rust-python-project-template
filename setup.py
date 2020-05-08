@@ -7,10 +7,15 @@ try:
 except ImportError:
     import subprocess
 
-    errno = subprocess.call([sys.executable, '-m', 'pip', 'install', 'setuptools-rust'])
-    if errno:
-        print("Please install setuptools-rust package")
-        raise SystemExit(errno)
+    try:
+        subprocess.run([sys.executable, '-m', 'pip', 'install', 'setuptools-rust'])
+    except Exception as e:
+        print(
+            'Fail installing setuptools-rust. Reason: %s. Install it manually from %s' % (
+                e, 'https://pypi.org/project/setuptools-rust/',
+            )
+        )
+        exit(1)
 
     from setuptools_rust import RustExtension
 
@@ -21,7 +26,7 @@ setup(
     url='localhost',
     author='root',
     author_email='root@localhost',
-    install_requires=['setuptools-rust'],
+    install_requires=[],
     packages=[],
     rust_extensions=[RustExtension('nathello')],
 )
